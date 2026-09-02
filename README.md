@@ -128,6 +128,7 @@ The system allows users to authenticate with Google, compose and schedule emails
 
 
 🧰 Technology Stack
+
 Layer	Technology
 Frontend	React, TypeScript, Vite
 Styling	Tailwind CSS
@@ -142,7 +143,10 @@ Authentication	Google OAuth
 Notifications	Slack OAuth
 Queue Monitoring	Bull Board
 Infrastructure	Docker + Docker Compose
+
+
 📁 Project Structure
+
 reachinbox-assignment/
 │
 ├── backend/
@@ -190,6 +194,8 @@ reachinbox-assignment/
 ├── docker-compose.yml
 ├── .gitignore
 └── README.md
+
+
 📅 How Email Scheduling Works
 
 When a user schedules an email, the following flow takes place:
@@ -228,6 +234,7 @@ Express API
                          │
                          └── Update Elasticsearch
 
+
 BullMQ delayed jobs are used instead of:
 
 setTimeout()
@@ -235,6 +242,7 @@ JavaScript in-memory timers
 Cron jobs
 
 This allows scheduled jobs to be persisted and recovered after restarts.
+
 
 💾 Persistence & Restart Handling
 
@@ -254,6 +262,8 @@ Email statuses remain persisted.
 Scheduled emails can still be processed after the restart.
 
 This makes the scheduler independent of in-memory application timers.
+
+
 
 ⚙️ Worker Concurrency
 
@@ -275,6 +285,8 @@ Start Worker
 npm run dev:worker
 
 Separating the worker from the API allows background processing to operate independently.
+
+
 
 🚦 Rate Limiting
 
@@ -309,6 +321,8 @@ Rate limit flow
 
 When the hourly limit is reached, the job is delayed until the next available hour instead of being discarded.
 
+
+
 ⏱️ Minimum Send Delay
 
 A configurable delay can be applied between email sends:
@@ -319,6 +333,8 @@ Redis is used to atomically reserve the next available send slot.
 
 This allows the send delay to remain coordinated even when multiple worker processes are running.
 
+
+
 🔔 Slack Notifications
 
 Slack OAuth is implemented to connect a Slack workspace.
@@ -328,6 +344,8 @@ The application stores the Slack OAuth access token for the tenant.
 When the hourly sending limit is reached, the worker can send a notification to the configured Slack channel.
 
 The application also safely handles the case where Slack is not connected.
+
+
 
 🔑 Google Authentication
 
@@ -357,6 +375,8 @@ Users and sessions are stored in PostgreSQL.
 
 Unauthenticated users are redirected to the login page when accessing protected routes.
 
+
+
 🔎 Elasticsearch Search
 
 Scheduled and sent emails are indexed into Elasticsearch.
@@ -367,6 +387,8 @@ Search API
 GET /api/search/emails?q=<search-term>
 
 Elasticsearch is initialized when the backend starts.
+
+
 
 📊 BullMQ Dashboard
 
@@ -379,6 +401,7 @@ http://localhost:5000/admin/queues
 It provides visibility into the BullMQ email queue and job states.
 
 🔌 API Endpoints
+
 Method	Endpoint	Description
 GET	/health	Backend and database health
 POST	/api/email/schedule	Schedule email(s)
@@ -394,6 +417,9 @@ Schedule Email Example
   "body": "Hello from ReachInbox",
   "scheduledAt": "2026-09-10T10:00:00.000Z"
 }
+
+
+
 🔐 Environment Variables
 
 Create a file:
@@ -433,6 +459,8 @@ SLACK_TENANT_ID=your_tenant_id
 
 Important: Never commit .env files, passwords, OAuth secrets, or access tokens to GitHub.
 
+
+
 📧 Ethereal Email Setup
 
 Ethereal Email is used as the SMTP provider for testing.
@@ -446,6 +474,8 @@ SMTP_PASS=your_password
 SMTP_FROM=your_email
 
 After an email is sent, Ethereal provides a preview URL that can be used to inspect the test email.
+
+
 
 🚀 Local Setup
 Prerequisites
@@ -519,6 +549,9 @@ npm run dev
 Frontend:
 
 http://localhost:5173
+
+
+
 🖥️ Running the Complete Application
 
 Four processes are used during local development.
@@ -534,6 +567,9 @@ npm run dev:worker
 Terminal 4 — Frontend
 cd frontend
 npm run dev
+
+
+
 🧪 Testing the Scheduler
 Start PostgreSQL, Redis and Elasticsearch.
 Start the Express backend.
@@ -552,6 +588,8 @@ Email is sent using Ethereal SMTP.
 PostgreSQL is updated with the final status.
 Elasticsearch is updated.
 The email appears in the Sent tab.
+
+
 🔄 Restart Test
 
 The scheduler can be tested for persistence using the following flow:
@@ -574,7 +612,10 @@ The scheduler can be tested for persistence using the following flow:
 
 This demonstrates that scheduling does not rely on in-memory timers.
 
+
+
 📋 Assignment Requirement Mapping
+
 Backend Requirements
 Assignment Requirement	Implementation
 Scheduler	BullMQ delayed jobs
@@ -604,7 +645,10 @@ Lead parsing	PapaParse
 Statistics	Dashboard statistics
 Logout	Session logout
 Slack	Slack connection/status
+
+
 📝 Assumptions
+
 Ethereal Email is used instead of a production email provider because this is an assessment/testing environment.
 The application is demonstrated using a local Docker-based environment.
 Each scheduled recipient is processed as an individual email job.
@@ -633,14 +677,19 @@ Ethereal SMTP
 
 Ethereal is suitable for development and demonstrations but is not intended to be a production email delivery provider.
 
+
 🏗️ Build
+
 Backend
 cd backend
 npm run build
 Frontend
 cd frontend
 npm run build
+
+
 🐳 Docker
+
 Start services
 docker compose up -d
 Stop services
@@ -666,6 +715,8 @@ The demonstration covers:
 ✅ Hourly rate limiting
 ✅ Slack integration
 ✅ Application restart persistence
+
+
 🔒 Repository
 
 This project is maintained in a private GitHub repository as required by the ReachInbox SDE Internship Assignment.
